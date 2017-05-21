@@ -1,8 +1,45 @@
+<?php
+    session_start(); 
+
+    include "connection.php";
+    
+    if(isset($_SESSION["log_id"])){
+	  	header('Location: index.php');
+	} 
+
+	global $db;
+
+	if($_SERVER["REQUEST_METHOD"] == "POST"){
+		if(isset($_POST["username"]) && isset($_POST["password"])){
+			$myusername = $_POST["username"];
+			$mypassword = $_POST["password"];
+			
+			$query = "SELECT * FROM AKUN WHERE username='$myusername' AND password='$mypassword'";
+			$result = pg_query($db, $query);
+			$row = pg_fetch_assoc($result);
+			
+			if($row["username"] == $myusername)
+			{
+				if($row["password"] == $mypassword)
+				{
+
+						$_SESSION["activeuser"] = $row["username"];
+						$_SESSION["log_id"] = $row["username"];
+						$_SESSION["user_type"] = $row["role"];
+						header("Location: index.php");
+					
+				}
+			}						
+			echo "Password Salah";
+		}
+	}	
+?>
+
 <!Doctype html>
 <html>
 	<head>
 		<meta charset = "utf-8">
-		<title>Login</title>
+		<title>SIRIMA - LOGIN</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link id="general_theme" rel="stylesheet" type = "text/css" href = "../css/style.css"/>
 		<link id="local_theme" rel="stylesheet" type = "text/css" href = "../css/login.css"/>
@@ -33,8 +70,5 @@
 				</div>
 			</div>
 		</div>		
-		<footer>
-
-		</footer>
 	</body>
 </html>
