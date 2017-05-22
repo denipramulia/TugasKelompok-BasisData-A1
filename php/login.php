@@ -14,23 +14,41 @@
 			$myusername = $_POST["username"];
 			$mypassword = $_POST["password"];
 			
-			$query = "SELECT * FROM AKUN WHERE username='$myusername' AND password='$mypassword'";
+			$query = "SELECT * FROM AKUN WHERE username='$myusername' AND password='$mypassword' AND role='TRUE'";
 			$result = pg_query($db, $query);
 			$row = pg_fetch_assoc($result);
 			
-			if($row["username"] == $myusername)
+			if($row['username'] == $myusername)
 			{
-				if($row["password"] == $mypassword)
+				if($row['password'] == $mypassword)
 				{
-
-						$_SESSION["activeuser"] = $row["username"];
-						$_SESSION["log_id"] = $row["username"];
-						$_SESSION["user_type"] = $row["role"];
-						header("Location: index.php");
-					
+						$_SESSION['activeuser'] = $row['username'];
+						$_SESSION['log_id'] = $row['username'];
+						$_SESSION['role'] = "admin";
+						header("Location: index.php");					
 				}
-			}						
-			echo "Password Salah";
+			}
+
+			$query = "SELECT * FROM AKUN WHERE username='$myusername' AND password='$mypassword' AND role='FALSE'";
+			$result = pg_query($db, $query);
+			$row = pg_fetch_assoc($result);
+			
+			if($row['username'] == $myusername)
+			{
+				if($row['password'] == $mypassword)
+				{
+						$_SESSION['activeuser'] = $row['username'];
+						$_SESSION['log_id'] = $row['username'];
+						$_SESSION['role'] = "pelamar";
+						header("Location: index.php");					
+				}
+			}	
+
+			echo '<script>';
+			echo 'alert("Incorrect Username and/or Password. Please Try Again!")';
+			echo '</script>';
+			header("refresh:0; url=login.php");
+			
 		}
 	}	
 ?>
@@ -65,7 +83,7 @@
 						<input id="username" type="text" name="username" placeholder="Username">
 						<input id="password" type="password" name="password" placeholder="Password">
 						<button type="submit" id="login-button">Login</button>
-						<p> Don't Have an Account? <a href="register.php"> Sign Up </a></p>
+						<p> Don't Have an Account? <a href="register.php"> Sign Up Here! </a></p>
 					</form>
 				</div>
 			</div>

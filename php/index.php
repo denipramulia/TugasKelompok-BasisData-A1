@@ -1,17 +1,16 @@
 <?php
     session_start(); 
- 
- 	include "connection.php";
-
-    if(!isset($_SESSION["log_id"])){
+ 	
+ 	if(!isset($_SESSION["log_id"])){
 	  	header('Location: login.php');
 	} 
+ 	include "connection.php";
     
 	global $db;
 
-	$user_type = $_SESSION["user_type"];
-	$username = $_SESSION["activeuser"];
-	$log_id = $_SESSION["log_id"];
+	$user_type = $_SESSION['role'];
+	$username = $_SESSION['activeuser'];
+	$log_id = $_SESSION['log_id'];
 ?>
 
 <!Doctype html>
@@ -34,11 +33,11 @@
 		    <ul class="nav navbar-nav">
 		    <?php
 		      echo '<li class="active"><a href="#">Home</a></li>';
-		      if($_SESSION['user_type']){
+		      if($user_type == "admin"){
 		      	echo '<li><a href="rekap_pendaftaran.php">Rekap Pendaftaran</a></li>';
 		      	echo '<li><a href="daftar_pelamar_diterima.php">Daftar Pelamar Diterima</a></li>';
 		      } 
-		      else{
+		      if($user_type == "pelamar"){
 		      	echo '<li><a href="membuat_pendaftaran.php">Membuat Pendaftaran</a></li>';
 		      	echo '<li><a href="riwayat_pendaftaran.php">Riwayat Pendaftaran</a></li>';
 		      	echo '<li><a href="lihat_kartu_ujian.php">Kartu Ujian</a></li>';
@@ -51,10 +50,10 @@
 		</nav>
 
 		<?php
-			if($user_type){
+			if($user_type == "admin"){
 				echo '<p> Welcome Admin! </p>';
 			}
-			else {
+			if($user_type == "pelamar"){
 				echo '<p> Welcome Pelamar </p>';
 			}
 			
